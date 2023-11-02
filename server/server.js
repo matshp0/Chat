@@ -96,7 +96,6 @@ const server = http.createServer((req, res) =>{
     }
 });
 
-server.keepAliveTimeout = 30000;
 server.listen(PORT, () => {
     console.log('Server is running');
 });
