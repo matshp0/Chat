@@ -38,7 +38,7 @@ const routing = {
 
     '/chatbox_script.js' : (client) =>{
         if (!client.isAuthorized(sessions)) return;
-        utils.sendFile('chatbox_script.js', client.res));
+        utils.sendFile('chatbox_script.js', client.res);
         },
 
     '/login' : (client) => {
