@@ -12,15 +12,15 @@ const chat = new Chat();
 
 const routing = {
     '/' : (client) => {
-        utils.sendFile('authorization.html', client.res).catch(err => console.log(err));
+        utils.sendFile('authorization.html', client.res);
         },
 
     '/authorization_style.css' : (client) =>{
-        utils.sendFile('authorization_style.css', client.res).catch(err => console.log(err));
+        utils.sendFile('authorization_style.css', client.res);
         },
 
     '/authorization_script.js' : (client) =>{
-        utils.sendFile('authorization_script.js', client.res).catch(err => console.log(err));
+        utils.sendFile('authorization_script.js', client.res);
         },
 
     '/chat' : (client) => {
@@ -28,17 +28,17 @@ const routing = {
             routing['/'](client);
             return;
         }
-        utils.sendFile('chatbox.html', client.res).catch(err => console.log(err));
+        utils.sendFile('chatbox.html', client.res);
         },
 
     '/chatbox_style.css' : (client) =>{
         if (!client.isAuthorized(sessions)) return;
-        utils.sendFile('chatbox_style.css', client.res).catch(err => console.log(err));
+        utils.sendFile('chatbox_style.css', client.res);
         },
 
     '/chatbox_script.js' : (client) =>{
         if (!client.isAuthorized(sessions)) return;
-        utils.sendFile('chatbox_script.js', client.res).catch(err => console.log(err));
+        utils.sendFile('chatbox_script.js', client.res));
         },
 
     '/login' : (client) => {
