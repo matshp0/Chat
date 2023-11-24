@@ -3,7 +3,7 @@ const path = require('path');
 const crypto = require('crypto')
 const config = require('./config')
 
-const sendFile = async (fileName, res) => {
+const sendFile = (fileName, res) => {
     const file = path.join(__dirname, '..', 'client', fileName)
     const extension = fileName.split('.').at(-1);
     fs.readFile(file, 'utf-8', (err, data) => {
