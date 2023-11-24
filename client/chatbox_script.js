@@ -31,7 +31,6 @@ const drawMessage = (message) =>{
 // Append the new message div to the chat container
     chatContainer.appendChild(newMessageDiv);
     scrollChatDown();
-    clearInput();
 }
 const scrollChatDown = () =>{
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -93,7 +92,8 @@ document.addEventListener("DOMContentLoaded", () =>{
         }).then(res => {
             console.log(res);
             if (res.status === 200){
-                console.log('Message sent successfully')
+                console.log('Message sent successfully');
+                clearInput();
             }
             if (res.status === 401)  window.location.href = "/"
             else{
