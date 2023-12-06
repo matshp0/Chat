@@ -14,14 +14,14 @@ class Client{
             this.constructed = new Promise(resolve => {
                 this.getData()
                     .then((data) => {
-                        this.data = data;
+                        this.data = JSON.parse(data);
                     }).catch(() => {
                         this.data = {};
-                        //console.log('No data')
                     }).finally(resolve)
             });
         }
         catch(err){
+            console.log(err);
             this.close(err);
         }
 
@@ -32,27 +32,20 @@ class Client{
         this.cookies = Object.fromEntries(str.map((item) => item.split('=')));
         this.session_id = this.cookies.session_id;
     }
-    getData(){
-        return new Promise((resolve, reject) =>{
-            let data = '';
-            this.req.on('data', (chunk) => data += chunk);
-            this.req.on('error', (err) => reject(err));
-            this.req.on('end', () => {
-                try {
-                    resolve(JSON.parse(data))
-                } catch (err) {
-                    reject();
-                }
-            });
-        });
+    async getData(){
+        const chunks = [];
+        for await (const chunk of this.req){
+            chunks.push(chunk);
+        }
+        return Buffer.concat(chunks).toString();
     }
     setCookie(value){
         this.res.setHeader('Set-Cookie', `session_id=${value}; Path=/; Max-Age=${config.SESSION_EXPIRATION_TIME}`);
     }
-    isAuthorized(sessions, options = 1){
+    isAuthorized(sessions){
         const user = sessions.get(this.session_id);
-        if (!user && options) {
-            this.sendResponse(401)
+        if (!user) {
+            this.sendResponse(401, 'Unauthorized')
             return
         }
         return user;

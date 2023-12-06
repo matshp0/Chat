@@ -3,14 +3,20 @@ const path = require('path');
 const crypto = require('crypto')
 const config = require('./config')
 
+const TYPES = {
+    'js' : 'text/js',
+    'css' : 'text/css',
+    'html' : 'text/html',
+    'txt' : 'text/plain'
+};
+
 const sendFile = (fileName, res) => {
     const file = path.join(__dirname, '..', 'client', fileName)
     const extension = fileName.split('.').at(-1);
-    fs.readFile(file, 'utf-8', (err, data) => {
-        if (err) console.log(err);
-        res.writeHead(200, { 'Content-Type': `text/${extension}`});
-        res.end(data);
-    });
+    const type = TYPES[extension];
+    const rs = fs.createReadStream(file, 'utf-8');
+    res.writeHead(200, {'Content-Type': type});
+    rs.pipe(res);
 }
 
 const createKey = (size) =>{

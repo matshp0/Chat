@@ -56,7 +56,6 @@ const getChatHistory = ()=>{
         .then(res => res.json())
         .then(data =>{
             const messages = data.message.split('\n');
-            console.log(messages)
             for (let message of messages){
                 console.log(message.username)
                 if (message) {

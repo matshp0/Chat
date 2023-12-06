@@ -3,7 +3,6 @@ const Client = require('./client');
 const utils = require('./utils');
 const Sessions = require('./sessions')
 const config =  require('./config')
-const events = require('events')
 const Chat = require('./chat')
 
 const PORT = 3000;
@@ -57,7 +56,6 @@ const routing = {
     '/subscribe' : (client) =>{
         if (!client.isAuthorized(sessions)) return;
         chat.subscribe(client)
-
     },
 
     '/send-message' : (client) => {
@@ -70,6 +68,7 @@ const routing = {
         client.sendResponse(200)
     },
     '/chat-history' : async (client) =>{
+        if (!client.isAuthorized(sessions)) return;
         const data = await chat.readMessages().catch((err) => console.log(err));
         if (data){
             client.sendResponse(200, data);
@@ -78,22 +77,18 @@ const routing = {
 }
 
 
-
 const server = http.createServer((req, res) =>{
-    try {
-        const client = new Client(req, res)
-        client.constructed.then(() =>{
-            console.log(client.url, client.data);
-            if (routing[client.url]){
-                const fn = routing[client.url];
-                fn(client);
-            }
-            else
-                client.sendResponse(404);
-        })
-    }catch(err) {
-        console.log(err);
-    }
+    const client = new Client(req, res)
+    const {url, method} = req;
+    console.log(url, method)
+    client.constructed.then(() =>{
+        if (routing[client.url]){
+            const fn = routing[client.url];
+            fn(client);
+        }
+        else
+            client.sendResponse(404);
+    });
 });
 
 server.listen(PORT, () => {
