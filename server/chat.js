@@ -29,14 +29,13 @@ class Chat{
         const string = JSON.stringify(message) + '\n'
         this.writeStream.write(string)
     }
-    readMessages() {
-        let data = '';
+    async readMessages() {
+        let messages = '';
         const rs = new fs.createReadStream('messages.txt')
-        return new Promise((resolve, reject) => {
-            rs.on('data', (chunk) => data += chunk);
-            rs.on('error', reject);
-            rs.on('end', () => resolve(data ));
-        });
+        for await (const chunk of rs){
+            messages += chunk;
+        }
+        return messages
     }
 
 }

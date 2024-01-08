@@ -23,10 +23,7 @@ const routing = {
         },
 
     '/chat' : (client) => {
-        if (!client.isAuthorized(sessions, 0)) {
-            routing['/'](client);
-            return;
-        }
+        if (!client.isAuthorized(sessions)) return;
         utils.sendFile('chatbox.html', client.res);
         },
 
@@ -69,7 +66,7 @@ const routing = {
     },
     '/chat-history' : async (client) =>{
         if (!client.isAuthorized(sessions)) return;
-        const data = await chat.readMessages().catch((err) => console.log(err));
+        const data = await chat.readMessages();
         if (data){
             client.sendResponse(200, data);
         }
@@ -92,5 +89,5 @@ const server = http.createServer((req, res) =>{
 });
 
 server.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}`);
+    console.log(`Server is running on  localhost:${PORT}`);
 });

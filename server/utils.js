@@ -32,7 +32,7 @@ const isValidUser = (data) =>{
 }
 
 const isValidMessage = (data) =>{
-    if (typeof data.message === 'string') return true
+    return typeof data.message === 'string';
 }
 
 const currentTime = () =>{
