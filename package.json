@@ -1,17 +1,33 @@
 {
-    "name": "untitled1",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server/server.js"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "eslint": "^9.3.0",
-        "prettier": "^3.2.5"
-    }
+  "name": "untitled1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.1",
+    "@fastify/static": "^8.0.2",
+    "@fastify/websocket": "^11.0.1",
+    "@prisma/client": "^5.21.0",
+    "ajv": "^8.17.1",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.3.0",
+    "fastify": "^5.0.0",
+    "node-cron": "^3.0.3",
+    "prettier": "^3.2.5"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "prisma": "^5.21.0"
+  }
 }

@@ -11,13 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch('/login', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 username: username,
                 password: password,
             }),
         }).then((res) => {
             if (res.status === 200) {
-                window.location.href = '/chat'
+                window.location.href = '/chatbox.html'
             } else {
                 console.log(res.status)
             }

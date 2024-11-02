@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique(map: "username") @db.VarChar(50)
+  password     String         @db.VarChar(50)
+  messages     messages[]
+  session_keys session_keys[]
+}
+
+model messages {
+  id        Int       @id @default(autoincrement())
+  sender_id Int
+  content   String    @db.Text
+  timestamp DateTime? @default(now()) @db.Timestamp(0)
+  users     users     @relation(fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
+
+  @@index([sender_id], map: "sender_id")
+}
+
+model session_keys {
+  session_key String    @id @db.VarChar(64)
+  user_id     Int
+  expire_at   DateTime  @db.Timestamp(0)
+  created_at  DateTime? @default(now()) @db.Timestamp(0)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "session_keys_ibfk_1")
+
+  @@index([expire_at], map: "expire_at")
+  @@index([session_key], map: "session_key")
+  @@index([user_id], map: "user_id")
+}

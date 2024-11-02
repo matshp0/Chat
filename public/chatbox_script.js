@@ -4,8 +4,30 @@ let messageInput
 let chatContainer
 let chatBox
 
+const socket = new WebSocket('ws://localhost:3000/ws');
+socket.addEventListener('message', (event) => {
+    try {
+        const message = JSON.parse(event.data);
+        drawMessage(message);
+    }
+    catch (e) {
+        console.error(e);
+    }
+});
+
 const drawMessage = (message) => {
+    console.log(message);
     const newMessageDiv = document.createElement('div')
+
+    const timeFormatter = new Intl.DateTimeFormat([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+    console.log(message.timestamp)
+    const formattedTime = timeFormatter.format(new Date(message.timestamp));
+    console.log()
+
     newMessageDiv.className = `msg ${message.username === username ? 'right' : 'left'}-msg`
 
     newMessageDiv.innerHTML = `
@@ -16,11 +38,11 @@ const drawMessage = (message) => {
             <div class="msg-bubble">
                 <div class="msg-info">
                     <div class="msg-info-name">${message.username}</div>
-                    <div class="msg-info-time">${message.time}</div>
+                    <div class="msg-info-time">${formattedTime}</div>
                 </div>
 
                 <div class="msg-text">
-                    ${message.message}
+                    ${message.content}
                 </div>
             </div>
 `
@@ -37,30 +59,13 @@ const clearInput = () => {
     messageInput.value = ''
 }
 
-const subscribe = () => {
-    fetch('/subscribe')
-        .then((res) => {
-            if (res.status === 401) window.location.href = '/'
-            return res.json()
-        })
-        .then((data) => drawMessage(data.message))
-        .then(subscribe)
-}
 
 const getChatHistory = () => {
-    fetch('/chat-history', { method: 'GET' })
+    fetch('/chat', { method: 'GET' })
         .then((res) => res.json())
         .then((data) => {
-            const messages = data.message.split('\n')
-            for (let message of messages) {
-                console.log(message.username)
-                if (message) {
-                    try {
-                        drawMessage(JSON.parse(message))
-                    } catch (err) {
-                        console.log(err)
-                    }
-                }
+            for (const message of data) {
+                drawMessage(message)
             }
         })
 }
@@ -72,25 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
     chatBox = document.getElementById('chat-container')
 
     getChatHistory()
-    subscribe()
 
     sendButton.addEventListener('click', (event) => {
         event.preventDefault()
         const message = messageInput.value
-        console.log(message)
-        fetch('/send-message', {
-            method: 'POST',
-            body: JSON.stringify({ message }),
-        }).then((res) => {
-            console.log(res)
-            if (res.status === 200) {
-                console.log('Message sent successfully')
-                clearInput()
-            }
-            if (res.status === 401) window.location.href = '/'
-            else {
-                console.log(res.status)
-            }
-        })
+        socket.send(JSON.stringify({ content: message }));
     })
 })
