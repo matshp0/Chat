@@ -4,7 +4,7 @@ let messageInput
 let chatContainer
 let chatBox
 
-const socket = new WebSocket('ws://localhost:3000/ws');
+const socket = new WebSocket(`ws://${window.location.host}/ws`);
 socket.addEventListener('message', (event) => {
     try {
         const message = JSON.parse(event.data);
